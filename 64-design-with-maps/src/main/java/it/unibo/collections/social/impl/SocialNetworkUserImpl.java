@@ -39,6 +39,9 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * think of what type of keys and values would best suit the requirements
      */
 
+     private Map <String, Set<U>> followed;
+    
+
     /*
      * [CONSTRUCTORS]
      *
@@ -50,6 +53,10 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * - username
      * - age and every other necessary field
      */
+
+
+
+
     /**
      * Builds a user participating in a social network.
      *
@@ -64,21 +71,42 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *            application
      */
     public SocialNetworkUserImpl(final String name, final String surname, final String user, final int userAge) {
-        super(null, null, null, 0);
+        super(name, surname, user, userAge);
     }
 
     /*
      * 2) Define a further constructor where the age defaults to -1
      */
 
+    public SocialNetworkUserImpl(final String name, final String surname, final String user) {
+        super(name, surname, user, -1);
+    }
+
+
     /*
      * [METHODS]
      *
      * Implements the methods below
      */
+    /**
+     * Adds a friend to the list of this user's current friends.
+     *
+     * @param group
+     *            the group (circle) on which the user in going to be added
+     * @param user
+     *            the user to be added as a user followed
+     * @return true if the user to be added as a followed person does not exist
+     *         yet, false otherwise
+     */
     @Override
     public boolean addFollowedUser(final String circle, final U user) {
-        return false;
+        Set <U> group = this.followed.get(circle);
+        if(group == null){
+            group = new HashSet<>();
+            this.followed.put(circle,group);
+        }
+
+        return group.add(user);
     }
 
     /**
@@ -86,13 +114,36 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * [NOTE] If no group with groupName exists yet, this implementation must
      * return an empty Collection.
      */
+    /**
+     * Gets the list of followed people belonging to a given group.
+     *
+     * @param groupName
+     *            the name of the group
+     * @return the collection of people followed by this user within group
+     *         "groupName".
+     */
+    
     @Override
-    public Collection<U> getFollowedUsersInGroup(final String groupName) {
-        return null;
+    public Collection<U> getFollowedUsersInGroup(final String groupName){
+        Set<U> users = this.followed.get(groupName);
+        if(users != null){
+            return new ArrayList<>(users);
+        }
+        return Collections.emptyList();
     }
 
+    /**
+     * Gets the list of every person followed by this user disregarding the
+     * group.
+     *
+     * @return the list of people followed by this user among all her groups
+     */
     @Override
     public List<U> getFollowedUsers() {
-        return null;
+        Set<U> users = new HashSet<>();
+        for(final Set<U> u: followed.values() ){
+            users.addAll(u);
+        }
+        return new ArrayList<>(users);
     }
 }
