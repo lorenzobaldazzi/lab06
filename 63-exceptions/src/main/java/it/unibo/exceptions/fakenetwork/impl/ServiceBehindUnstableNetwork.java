@@ -41,6 +41,7 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
      */
     public ServiceBehindUnstableNetwork(final double failProbability) {
         this(failProbability, 0);
+        
     }
 
     /**
