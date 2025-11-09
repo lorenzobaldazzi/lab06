@@ -79,7 +79,7 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
 
     public SocialNetworkUserImpl(final String name, final String surname, final String user) {
-        super(name, surname, user, -1);
+        super(name, surname, user,-1);
     }
 
 
